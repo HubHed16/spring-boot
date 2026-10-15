@@ -4,6 +4,7 @@
 
 plugins {
 	id "base"
+	id "org.sonarqube" version "7.5.0.8588"
 }
 
 description = "Spring Boot Build"
