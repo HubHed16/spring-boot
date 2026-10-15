@@ -15,9 +15,9 @@ jobs:
         uses: ./.github/actions/prepare-gradle-build
         with:
           cache-read-only: false
-      - name: Build and Analyze
+      - name: Assemble and Analyze
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_PROJECT_KEY: ${{ vars.SONAR_PROJECT_KEY }}
           SONAR_ORGANIZATION: ${{ vars.SONAR_ORGANIZATION }}
-        run: ./gradlew build sonar -Dsonar.projectKey="$SONAR_PROJECT_KEY" -Dsonar.organization="$SONAR_ORGANIZATION"
+        run: ./gradlew assemble sonar -x test -x check -x :buildSrc:test -x :buildSrc:check -Dsonar.projectKey="$SONAR_PROJECT_KEY" -Dsonar.organization="$SONAR_ORGANIZATION"
