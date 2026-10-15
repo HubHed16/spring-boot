@@ -1,23 +1,33 @@
 name: SonarCloud
+
 on:
   push:
   workflow_dispatch:
+
 permissions:
   contents: read
+
 jobs:
   sonarcloud:
     name: SonarCloud Analysis
     runs-on: ${{ vars.UBUNTU_MEDIUM || 'ubuntu-latest' }}
     steps:
       - name: Check Out Code
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        uses: actions/checkout@v4
+
       - name: Prepare Gradle Build
         uses: ./.github/actions/prepare-gradle-build
         with:
           cache-read-only: false
+
       - name: Assemble and Analyze
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_PROJECT_KEY: ${{ vars.SONAR_PROJECT_KEY }}
           SONAR_ORGANIZATION: ${{ vars.SONAR_ORGANIZATION }}
-        run: ./gradlew assemble sonar -x test -x check -x :buildSrc:test -x :buildSrc:check -Dsonar.projectKey="$SONAR_PROJECT_KEY" -Dsonar.organization="$SONAR_ORGANIZATION"
+        run: >
+          ./gradlew assemble sonar
+          -x test -x check -x :buildSrc:test -x :buildSrc:check
+          -Dsonar.projectKey="$SONAR_PROJECT_KEY"
+          -Dsonar.organization="$SONAR_ORGANIZATION"
+          -Dsonar.test.exclusions="**/*"
